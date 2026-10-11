@@ -169,138 +169,70 @@ int main(void)
 
                                 }
 
-                                cJSON *itemUno = cJSON_GetArrayItem(row, 0);
+                                int rowSize = cJSON_GetArraySize(row);
 
-                                if (itemUno == NULL)
+                                for (int i = 0; i < rowSize; i++)
                                 {
-                                    printf("The first entry could not be found in row.\n");
-                                }
-                                else
-                                {
-                                    printf("Der erste Eintrag aus row wurde erfolgreich gelesen.\n");
+                                    printf("%d\n", i);
 
-                                    cJSON *cellUno = cJSON_GetObjectItem(itemUno, "Cell");
+                                    cJSON *elementRow = cJSON_GetArrayItem(row, i);
 
-                                    if (cellUno == NULL)
+                                    if (elementRow == NULL)
                                     {
-                                        printf("Cell could not be found.\n");
+                                        printf("Could not find row %d\n", i);
                                     }
-                                    else
+                                    else 
                                     {
-                                        printf("Cell found.\n");
+                                        cJSON *cell = cJSON_GetObjectItem(elementRow, "Cell");
 
-                                        cJSON *hydrogenNr = cJSON_GetArrayItem(cellUno, 0);
-
-                                        if (hydrogenNr == NULL)
+                                        if (cell == NULL)
                                         {
-                                            printf("The atomic number of hydrogen could not be found.\n");
+                                            printf("Cell could not be found\n");
                                         }
                                         else
                                         {
-                                            const char *hydrogenNum = cJSON_GetStringValue(hydrogenNr);
+                                            int cellSize = cJSON_GetArraySize(cell);
 
-                                            if (hydrogenNum == NULL)
+                                            for (int j = 0; j < cellSize; j++)
                                             {
-                                                printf("NULL\n");
-                                            }
-                                            else
-                                            {
-                                                printf("%s\n", hydrogenNum);
-                                            }
-                                        }
+                                                cJSON *columni = cJSON_GetArrayItem(column, j);
 
-                                        cJSON *hydrogenSymbol = cJSON_GetArrayItem(cellUno, 1);
+                                                cJSON *celli = cJSON_GetArrayItem(cell, j);
 
-                                        if (hydrogenSymbol == NULL)
-                                        {
-                                            printf("Error hydrogen symbol could not be found.\n");
-                                        }
-                                        else
-                                        {
-                                            const char *hydrogenSym = cJSON_GetStringValue(hydrogenSymbol);
+                                                if (columni == NULL || celli == NULL)
+                                                {
+                                                    printf("Property %d could not be found\n", j);
+                                                }
+                                                else
+                                                {
+                                                    const char *propertyName = cJSON_GetStringValue(columni);
 
-                                            if (hydrogenSym == NULL)
-                                            {
-                                                printf("NULL\n");
-                                            }
-                                            else
-                                            {
-                                                printf("%s\n", hydrogenSym);
-                                            }
-                                        }
-                                        
-                                        cJSON *hydrogenName = cJSON_GetArrayItem(cellUno, 2);
+                                                    const char *value = cJSON_GetStringValue(celli);
 
-                                        if (hydrogenName == NULL)
-                                        {
-                                            printf("Error name could not be found.\n");
-                                        }
-                                        else
-                                        {
-                                            const char *hydrogenN = cJSON_GetStringValue(hydrogenName);
-
-                                            if (hydrogenN == NULL)
-                                            {
-                                                printf("NULL\n");
-                                            }
-                                            else
-                                            {
-                                                printf("%s\n", hydrogenN);
+                                                    if (propertyName == NULL || value == NULL)
+                                                    {
+                                                        printf("NULL\n");
+                                                    }
+                                                    else
+                                                    {
+                                                        printf("%s: %s\n", propertyName, value);
+                                                    }
+                                                    
+                                                }
+                                                
                                             }
                                         }
-
-                                        cJSON *hydrogenMass = cJSON_GetArrayItem(cellUno, 3);
-
-                                        if (hydrogenMass == NULL)
-                                        {
-                                            printf("Error mass could not be found.\n");
-                                        }
-                                        else
-                                        {
-                                            const char *hydrogenM = cJSON_GetStringValue(hydrogenMass);
-
-                                            if (hydrogenM == NULL)
-                                            {
-                                                printf("NULL\n");
-                                            }
-                                            else
-                                            {
-                                                printf("%s u\n", hydrogenM);
-                                            }
-                                        }
-
-                                        cJSON *hydrogenPaulingScale = cJSON_GetArrayItem(cellUno, 6);
-
-                                        if (hydrogenPaulingScale == NULL)
-                                        {
-                                            printf("Error pauling scale could not be found.\n");
-                                        }
-                                        else
-                                        {
-                                            const char *hydrogenEN = cJSON_GetStringValue(hydrogenPaulingScale);
-
-                                            if (hydrogenEN == NULL)
-                                            {
-                                                printf("NULL\n");
-                                            }
-                                            else
-                                            {
-                                                printf("%s\n", hydrogenEN);
-                                            }
-                                        }
-
                                     }
+                            
                                 }
 
                             }
                         }
                     }
                     cJSON_Delete(root);
-                }
-                    
+                } 
                 
             }
-
             
         }
 
