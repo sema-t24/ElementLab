@@ -168,6 +168,130 @@ int main(void)
                                     }
 
                                 }
+
+                                cJSON *itemUno = cJSON_GetArrayItem(row, 0);
+
+                                if (itemUno == NULL)
+                                {
+                                    printf("The first entry could not be found in row.\n");
+                                }
+                                else
+                                {
+                                    printf("Der erste Eintrag aus row wurde erfolgreich gelesen.\n");
+
+                                    cJSON *cellUno = cJSON_GetObjectItem(itemUno, "Cell");
+
+                                    if (cellUno == NULL)
+                                    {
+                                        printf("Cell could not be found.\n");
+                                    }
+                                    else
+                                    {
+                                        printf("Cell found.\n");
+
+                                        cJSON *hydrogenNr = cJSON_GetArrayItem(cellUno, 0);
+
+                                        if (hydrogenNr == NULL)
+                                        {
+                                            printf("The atomic number of hydrogen could not be found.\n");
+                                        }
+                                        else
+                                        {
+                                            const char *hydrogenNum = cJSON_GetStringValue(hydrogenNr);
+
+                                            if (hydrogenNum == NULL)
+                                            {
+                                                printf("NULL\n");
+                                            }
+                                            else
+                                            {
+                                                printf("%s\n", hydrogenNum);
+                                            }
+                                        }
+
+                                        cJSON *hydrogenSymbol = cJSON_GetArrayItem(cellUno, 1);
+
+                                        if (hydrogenSymbol == NULL)
+                                        {
+                                            printf("Error hydrogen symbol could not be found.\n");
+                                        }
+                                        else
+                                        {
+                                            const char *hydrogenSym = cJSON_GetStringValue(hydrogenSymbol);
+
+                                            if (hydrogenSym == NULL)
+                                            {
+                                                printf("NULL\n");
+                                            }
+                                            else
+                                            {
+                                                printf("%s\n", hydrogenSym);
+                                            }
+                                        }
+                                        
+                                        cJSON *hydrogenName = cJSON_GetArrayItem(cellUno, 2);
+
+                                        if (hydrogenName == NULL)
+                                        {
+                                            printf("Error name could not be found.\n");
+                                        }
+                                        else
+                                        {
+                                            const char *hydrogenN = cJSON_GetStringValue(hydrogenName);
+
+                                            if (hydrogenN == NULL)
+                                            {
+                                                printf("NULL\n");
+                                            }
+                                            else
+                                            {
+                                                printf("%s\n", hydrogenN);
+                                            }
+                                        }
+
+                                        cJSON *hydrogenMass = cJSON_GetArrayItem(cellUno, 3);
+
+                                        if (hydrogenMass == NULL)
+                                        {
+                                            printf("Error mass could not be found.\n");
+                                        }
+                                        else
+                                        {
+                                            const char *hydrogenM = cJSON_GetStringValue(hydrogenMass);
+
+                                            if (hydrogenM == NULL)
+                                            {
+                                                printf("NULL\n");
+                                            }
+                                            else
+                                            {
+                                                printf("%s u\n", hydrogenM);
+                                            }
+                                        }
+
+                                        cJSON *hydrogenPaulingScale = cJSON_GetArrayItem(cellUno, 6);
+
+                                        if (hydrogenPaulingScale == NULL)
+                                        {
+                                            printf("Error pauling scale could not be found.\n");
+                                        }
+                                        else
+                                        {
+                                            const char *hydrogenEN = cJSON_GetStringValue(hydrogenPaulingScale);
+
+                                            if (hydrogenEN == NULL)
+                                            {
+                                                printf("NULL\n");
+                                            }
+                                            else
+                                            {
+                                                printf("%s\n", hydrogenEN);
+                                            }
+                                        }
+
+                                    }
+                                }
+
                             }
                         }
                     }
