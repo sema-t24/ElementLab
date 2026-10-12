@@ -4,7 +4,7 @@
 #include <string.h>
 #include <cjson/cJSON.h>
 
-//Behälter zum Speichern der Daten
+
 typedef struct
 {
     char *text;
@@ -141,91 +141,161 @@ int main(void)
 
                                 if (column == NULL)
                                 {
-                                    printf("Fehler, column wurde nicht gefunden!.\n");
+                                    printf("Column could not be found.\n");
                                 }
                                 else
                                 {
-                                    printf("Column wurde gefunden.\n");
+                                    cJSON *elementOutput = cJSON_CreateObject();
+                                    cJSON *elementArray = cJSON_CreateArray();
 
-                                    cJSON *atomicNumber = cJSON_GetArrayItem(column, 0);
-
-                                    if (atomicNumber == NULL)
+                                    if (elementOutput == NULL || elementArray == NULL)
                                     {
-                                        printf("Fehler Atomic Number konnte nicht gelesen werden!\n");
+                                        printf("Error output or array could not be created.\n");
                                     }
                                     else
                                     {
-                                        const char *AtomicNumber = cJSON_GetStringValue(atomicNumber);
+                                        cJSON_bool elements = cJSON_AddItemToObject(
+                                            elementOutput, 
+                                            "elements",
+                                            elementArray
+                                        );
 
-                                        if (AtomicNumber == NULL)
+                                        if (elements == 0)
                                         {
-                                            printf("NULL\n");
+                                            printf("Error could not add array to object.\n");
+
+                                            cJSON_Delete(elementArray);
+                                            cJSON_Delete(elementOutput);
                                         }
                                         else
                                         {
-                                            printf("%s\n", AtomicNumber);
-                                        }
-                                    }
 
-                                }
+                                            int rowSize = cJSON_GetArraySize(row);
 
-                                int rowSize = cJSON_GetArraySize(row);
-
-                                for (int i = 0; i < rowSize; i++)
-                                {
-                                    printf("%d\n", i);
-
-                                    cJSON *elementRow = cJSON_GetArrayItem(row, i);
-
-                                    if (elementRow == NULL)
-                                    {
-                                        printf("Could not find row %d\n", i);
-                                    }
-                                    else 
-                                    {
-                                        cJSON *cell = cJSON_GetObjectItem(elementRow, "Cell");
-
-                                        if (cell == NULL)
-                                        {
-                                            printf("Cell could not be found\n");
-                                        }
-                                        else
-                                        {
-                                            int cellSize = cJSON_GetArraySize(cell);
-
-                                            for (int j = 0; j < cellSize; j++)
+                                            for (int i = 0; i < rowSize; i++)
                                             {
-                                                cJSON *columni = cJSON_GetArrayItem(column, j);
+                                                cJSON *list = cJSON_CreateObject();
 
-                                                cJSON *celli = cJSON_GetArrayItem(cell, j);
-
-                                                if (columni == NULL || celli == NULL)
+                                                if (list == NULL)
                                                 {
-                                                    printf("Property %d could not be found\n", j);
+                                                    printf("Error list could not be created.\n");
                                                 }
                                                 else
                                                 {
-                                                    const char *propertyName = cJSON_GetStringValue(columni);
+                                                    printf("%d\n", i);
 
-                                                    const char *value = cJSON_GetStringValue(celli);
+                                                    cJSON *elementRow = cJSON_GetArrayItem(row, i);
 
-                                                    if (propertyName == NULL || value == NULL)
+                                                    if (elementRow == NULL)
                                                     {
-                                                        printf("NULL\n");
+                                                        printf("Could not find row %d\n", i);
                                                     }
-                                                    else
+                                                    else 
                                                     {
-                                                        printf("%s: %s\n", propertyName, value);
+                                                        cJSON *cell = cJSON_GetObjectItem(elementRow, "Cell");
+
+                                                        if (cell == NULL)
+                                                        {
+                                                            printf("Cell could not be found\n");
+                                                        }
+                                                        else
+                                                        {
+                                                            int cellSize = cJSON_GetArraySize(cell);
+
+                                                            for (int j = 0; j < cellSize; j++)
+                                                            {
+                                                                cJSON *columni = cJSON_GetArrayItem(column, j);
+
+                                                                cJSON *celli = cJSON_GetArrayItem(cell, j);
+
+                                                                if (columni == NULL || celli == NULL)
+                                                                {
+                                                                    printf("Property %d could not be found\n", j);
+                                                                }
+                                                                else
+                                                                {
+                                                                    const char *propertyName = cJSON_GetStringValue(columni);
+
+                                                                    const char *value = cJSON_GetStringValue(celli);
+
+                                                                    if (propertyName == NULL || value == NULL)
+                                                                    {
+                                                                        printf("NULL\n");
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        printf("%s: %s\n", propertyName, value);
+
+                                                                        cJSON *elementProperties = cJSON_AddStringToObject(
+                                                                            list,
+                                                                            propertyName,
+                                                                            value
+                                                                        );
+
+                                                                        if (elementProperties == NULL)
+                                                                        {
+                                                                            printf("Error properties could not besaved in the list.\n");
+                                                                        }
+                                                                        
+                                                                    }
+                                                                    
+                                                                }
+                                                                
+                                                            }
+                                                            cJSON_bool elementReady = cJSON_AddItemToArray(
+                                                                                elementArray,
+                                                                                list
+                                                                            );
+
+                                                                            if (elementReady == 0)
+                                                                            {
+                                                                                printf("Error list could not be saved in array.\n");
+
+                                                                                cJSON_Delete(list);
+                                                                            }
+                                                        }
                                                     }
-                                                    
                                                 }
-                                                
                                             }
-                                        }
-                                    }
-                            
-                                }
+                                            char *elementsList = cJSON_Print(elementOutput);
 
+                                            if (elementsList == NULL)
+                                            {
+                                                printf("Error could not convert JSON to text.\n");
+                                            }
+                                            else
+                                            {
+                                                FILE *elementsFile = fopen("elements.json", "w");
+
+                                                if (elementsFile == NULL)
+                                                {
+                                                    printf("Error text file could not be created.\n");
+                                                }
+                                                else
+                                                {
+                                                    int crown = fputs(elementsList,  elementsFile);
+
+                                                    if (crown == EOF)
+                                                    {
+                                                        printf("Error elements file could not be written.\n");
+                                                    }
+
+                                                    int result = fclose(elementsFile);
+
+                                                    if (result == EOF)
+                                                    {
+                                                        printf("Error could not close elemnts file.\n");
+                                                    }
+                                                }
+
+                                                cJSON_free(elementsList);
+                                            }
+
+                                            cJSON_Delete(elementOutput);
+                                        }
+
+                                    }    
+                                }
                             }
                         }
                     }
